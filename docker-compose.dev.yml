@@ -1,0 +1,39 @@
+version: '3.7'
+
+services:
+ notes:
+  build:
+   context: .
+   dockerfile: Dockerfile
+   target: prod
+  ports:
+   - 8000:8000
+   - 9229:9229
+  environment:
+   - SERVER_PORT=8000
+   - CONNECTIONSTRING=mongodb://mongo:27017/notes
+  volumes:
+   - ./:/app
+  command: npm run debug
+
+ mongo:
+  image: mongo
+  ports:
+   - 27017:27017
+  volumes:
+   - mongodb:/data/db2
+   - mongodb_config:/data/configdb2
+
+ mongo_express:
+  image: mongo-express
+  depends_on:
+    - mongo
+  ports:
+    - 8081:8081
+  environment: 
+    - ME_CONFIG_MONGODB_SERVER=mongo
+
+
+volumes:
+ mongodb:
+ mongodb_config:
